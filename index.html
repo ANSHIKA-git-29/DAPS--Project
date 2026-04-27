@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title> Digital Asset Protection System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+
+  <!-- Animated Background -->
+  <div class="bg-layer">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    <canvas id="gridCanvas"></canvas>
+  </div>
+
+  <!-- Top Nav -->
+  
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">DAPS<span class="logo-dot">.</span></span>
+    </div>
+    <div class="nav-badge">AI-Powered · v2.1</div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-tag">
+      <span class="pulse-dot"></span>
+      System Active — Scanning Ready
+    </div>
+    <h1 class="hero-title">
+    Secure Your <span class="highlight">Digital Assets</span> with AI
+    </h1>
+    <p class="tagline"> Real-time AI Detection • Secure • Smart</p>
+    <p class="hero-sub">
+      Upload any file — image, video, or document — and our AI engine<br/>
+      detects unauthorized usage, piracy, and IP violations instantly.
+    </p>
+  </section>
+
+  <!-- Main Card -->
+  <main class="card-wrapper">
+    <div class="glass-card" id="mainCard">
+
+      <!-- Step 1: Upload -->
+      <div class="step" id="stepUpload">
+        <div class="step-label"><span>01</span> Upload Asset</div>
+
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*,video/*,.pdf,.doc,.docx,.txt" hidden/>
+          <div class="drop-icon">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <path d="M24 6V30M24 6L16 14M24 6L32 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 34V40C8 41.1 8.9 42 10 42H38C39.1 42 40 41.1 40 40V34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="drop-title">Drag & drop your file here</p>
+          <p class="drop-sub">or click to browse — Images, Videos, Documents</p>
+          <button class="btn-browse" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+        </div>
+
+        <!-- File Preview -->
+        <div class="file-preview" id="filePreview" style="display:none">
+          <div class="file-info">
+            <div class="file-icon" id="fileIcon">📄</div>
+            <div class="file-meta">
+              <span class="file-name" id="fileName">file.pdf</span>
+              <span class="file-size" id="fileSize">2.4 MB</span>
+            </div>
+            <button class="btn-remove" id="removeFile" title="Remove">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="card-divider"></div>
+
+      <!-- Step 2: Scan -->
+      <div class="step" id="stepScan">
+        <div class="step-label"><span>02</span> AI Analysis</div>
+        <button class="btn-scan glow-btn" id="scanBtn"  onclick="startScan()">
+          <span class="btn-text">Scan Now</span>
+          <span class="btn-icon">→</span>
+        </button>
+        <p class="scan-note">Multi-layer AI analysis · Hash verification · Fingerprint matching</p>
+      </div>
+
+    </div>
+
+    <!-- Scanning Overlay (shows during scan) -->
+    <div class="scan-overlay" id="scanOverlay" style="display:none">
+      <div class="scan-card">
+        <div class="radar-wrap">
+          <div class="radar-ring r1"></div>
+          <div class="radar-ring r2"></div>
+          <div class="radar-ring r3"></div>
+          <div class="radar-sweep"></div>
+          <div class="radar-center">⬡</div>
+        </div>
+        <p class="scan-status" id="scanStatus">Initializing AI engine…</p>
+        <div class="scan-progress">
+          <div class="scan-bar" id="scanBar"></div>
+        </div>
+        <div class="scan-steps-list" id="scanStepsList"></div>
+      </div>
+    </div>
+
+    <!-- Result Card -->
+    <div class="result-card" id="resultCard" style="display:none">
+      <div class="result-icon" id="resultIcon"></div>
+      <h2 class="result-title" id="resultTitle"></h2>
+      <p class="result-desc" id="resultDesc"></p>
+
+      <div class="result-meta" id="resultMeta"></div>
+
+      <div class="result-actions">
+        <button class="btn-report" id="btnReport" onclick="downloadReport()">Download Report</button>
+        <button class="btn-reset" onclick="resetScan()">Scan Another File</button>
+      </div>
+    </div>
+  </main>
+  <button onclick="showHistory()">View History</button>
+<div id="historyBox"></div>
+
+  <!-- Stats Bar -->
+  <section class="stats-bar">
+    <div class="stat">
+      <span class="stat-num">98.7<span>%</span></span>
+      <span class="stat-label">Detection Accuracy</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span class="stat-num">3.2<span>s</span></span>
+      <span class="stat-label">Avg Scan Time</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span class="stat-num">12K<span>+</span></span>
+      <span class="stat-label">Assets Scanned</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span class="stat-num">5</span>
+      <span class="stat-label">File Types Supported</span>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>DAPS · Digital Asset Protection System · B.Tech CSE Prototype · Built with AI &amp; Node.js</p>
+  </footer>
+
+  <script src="app.js"></script>
+ 
+</body>
+</html>
